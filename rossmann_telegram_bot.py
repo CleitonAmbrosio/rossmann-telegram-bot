@@ -92,7 +92,7 @@ app = Flask( __name__ )
 def index():
     if request.method == 'POST':
         message = request.get_json()
-	log.info(f'Received message: {message}')
+        log.info(f'Received message: {message}')
         chat_id, store_id = parse_message( message )
         
         if store_id != 'error':
