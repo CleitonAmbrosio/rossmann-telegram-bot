@@ -2,7 +2,12 @@ import os
 import pandas as pd
 import requests
 import json
+import logging
 from flask import Flask, request, Response
+
+FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+log = logging.getLogger()
+logging.basicConfig(format=FORMAT)
 
 # constants
 TOKEN = os.environ.get('TOKEN')
@@ -87,6 +92,7 @@ app = Flask( __name__ )
 def index():
     if request.method == 'POST':
         message = request.get_json()
+	log.info(f'Received message: {message}')
         chat_id, store_id = parse_message( message )
         
         if store_id != 'error':
