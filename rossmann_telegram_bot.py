@@ -5,19 +5,19 @@ import json
 from flask import Flask, request, Response
 
 # constants
-TOKEN = '1832211466:AAGI--2NNJLZOojybA98G1v9f8NINMaPnF4'
+TOKEN = os.environ.get('TOKEN')
 
 # getMe
-# https://api.telegram.org/bot1832211466:AAGI--2NNJLZOojybA98G1v9f8NINMaPnF4/getMe
+# https://api.telegram.org/TOKEN/getMe
 
 # getUpdates
-# https://api.telegram.org/bot1832211466:AAGI--2NNJLZOojybA98G1v9f8NINMaPnF4/getUpdates
+# https://api.telegram.org/TOKEN/getUpdates
 
 # sendMessage
-# https://api.telegram.org/bot1832211466:AAGI--2NNJLZOojybA98G1v9f8NINMaPnF4/sendMessage?chat_id=<ID>&text=<MSSG>
+# https://api.telegram.org/TOKEN/sendMessage?chat_id=<ID>&text=<MSSG>
 
 # setWebhook
-# https://api.telegram.org/bot1832211466:AAGI--2NNJLZOojybA98G1v9f8NINMaPnF4/setWebhook?url=<URL>
+# https://api.telegram.org/TOKEN/setWebhook?url=<URL>
 
 ###### Functions ######
 
@@ -116,5 +116,5 @@ def index():
 
 
 if __name__ == '__main__':
-    port = os.environ.get( 'PORT', 5000 )
+    port = os.environ.get( 'PORT', 10000 )
     app.run( host='0.0.0.0', port=port )
