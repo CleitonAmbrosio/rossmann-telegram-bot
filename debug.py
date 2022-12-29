@@ -49,10 +49,6 @@ def index():
     if request.method == 'POST':
         message = request.get_json()
         log.info(f'Received message: {message}')
-        chat_id, store_id, message_id = parse_message( message )
-        log.info(f'Chat ID: {chat_id}')
-        log.info(f'Store id: {store_id}')
-        log.info(f'Message id: {message_id}')
         
     else:
         return '<h1> Rossmann Telegram Bot awaiting call. </h1>'
