@@ -1,7 +1,7 @@
 import os
 import requests
 import json
-from flask import Flask, request, Response
+from flask import Flask, request, Response, abort
 
 # constants
 TOKEN = os.environ.get('TOKEN')
@@ -27,11 +27,12 @@ app = Flask( __name__ )
 def index():
     if request.method == 'POST':
         message = request.get_json()
-        app.logger.info(f'Received message: {message}')
+        app.logger.info('Received message: %s', message)
         return Response( 'Ok', status=200 ) 
         
     else:
-        return '<h1> Rossmann Telegram Bot awaiting call. </h1>'
+        app.logger.info('<h1> Rossmann Telegram Bot awaiting call. </h1>')
+        abort(401)
 
 
 if __name__ == '__main__':
