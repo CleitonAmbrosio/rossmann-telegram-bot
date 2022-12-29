@@ -27,7 +27,7 @@ app = Flask( __name__ )
 def index():
     if request.method == 'POST':
         message = request.get_json()
-        print(f'Received message: {message}')
+        app.logger.info(f'Received message: {message}')
         return Response( 'Ok', status=200 ) 
         
     else:
