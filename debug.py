@@ -23,22 +23,6 @@ TOKEN = os.environ.get('TOKEN')
 # setWebhook
 # https://api.telegram.org/TOKEN/setWebhook?url=<URL>
 
-###### Functions ######
-
-def parse_message( message ):
-    chat_id = message['message']['chat']['id']
-    message_id = message['message']['message_id']
-    store_id = message['message']['text']
-    
-    store_id = store_id.replace( '/',' ' )
-    
-    try:
-        store_id = int( store_id )
-    except ValueError:
-        store_id = 'error'
-    
-    return chat_id or 1, store_id or 2, message_id or 3
-
 
 ######################################
 
