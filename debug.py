@@ -1,12 +1,7 @@
 import os
 import requests
 import json
-import logging
 from flask import Flask, request, Response
-
-FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
-log = logging.getLogger()
-logging.basicConfig(format=FORMAT)
 
 # constants
 TOKEN = os.environ.get('TOKEN')
@@ -32,7 +27,7 @@ app = Flask( __name__ )
 def index():
     if request.method == 'POST':
         message = request.get_json()
-        log.info(f'Received message: {message}')
+        print(f'Received message: {message}')
         return Response( 'Ok', status=200 ) 
         
     else:
