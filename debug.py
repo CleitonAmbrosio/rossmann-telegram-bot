@@ -33,6 +33,7 @@ def index():
     if request.method == 'POST':
         message = request.get_json()
         log.info(f'Received message: {message}')
+        return Response( 'Ok', status=200 ) 
         
     else:
         return '<h1> Rossmann Telegram Bot awaiting call. </h1>'
