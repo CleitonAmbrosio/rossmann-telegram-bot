@@ -38,51 +38,7 @@ def parse_message( message ):
     except ValueError:
         store_id = 'error'
     
-    return chat_id, store_id, message_id
-
-
-def send_message( chat_id, text ):
-    url = 'https://api.telegram.org/bot{}/sendMessage?chat_id={}'.format( TOKEN, chat_id )
-    r = requests.post( url, json={'text': text} )
-    f'Status code: {r.status_code}'
-    
-    return None
-    
-    
-def load_dataset( store_id ):
-    df_tester = pd.read_csv( 'test.csv' )
-    df_stores_raw = pd.read_csv( 'store.csv', low_memory=False )
-    df_tester = pd.merge( df_tester, df_stores_raw, how='left', on='Store' )
-
-    df_tester = df_tester.loc[df_tester.loc[:,'Store'] == store_id,:]
-    
-    if not df_tester.empty:    
-        df_tester = df_tester.loc[df_tester.loc[:,'Open'] != 0,:]
-
-        # Fixing df_tester problems not contemplated by Rossmann.data_cleaning
-        df_tester = df_tester.drop( columns='Id', axis=1 )
-        df_tester = df_tester.loc[~df_tester.loc[:,'Open'].isna(),:]
-    
-        data = json.dumps( df_tester.to_dict( orient='records' ) )
-    
-    else:
-        data = 'error'
-    
-    
-    return data
-    
-    
-def predict( data ):
-    # API call
-    url = 'https://rossmann-store-sales-forecast.herokuapp.com/rossmann/predict'
-    header = { 'Content-type': 'application/json' }
-
-    r = requests.post( url, data=data, headers=header )
-    print( 'Status code {}'.format( r.status_code ) )
-
-    df_response = pd.DataFrame( r.json(), columns=r.json()[0].keys() )
-
-    return df_response
+    return chat_id or 1, store_id or 2, message_id or 3
 
 
 ######################################
