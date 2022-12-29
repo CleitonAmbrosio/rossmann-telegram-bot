@@ -39,6 +39,29 @@ def send_message(chat_id, text):
     
     return None
 
+
+def load_dataset( store_id ):
+    df_tester = pd.read_csv( 'test.csv' )
+    df_stores_raw = pd.read_csv( 'store.csv', low_memory=False )
+    df_tester = pd.merge( df_tester, df_stores_raw, how='left', on='Store' )
+
+    df_tester = df_tester.loc[df_tester.loc[:,'Store'] == store_id,:]
+    
+    if not df_tester.empty:    
+        df_tester = df_tester.loc[df_tester.loc[:,'Open'] != 0,:]
+
+        # Fixing df_tester problems not contemplated by Rossmann.data_cleaning
+        df_tester = df_tester.drop( columns='Id', axis=1 )
+        df_tester = df_tester.loc[~df_tester.loc[:,'Open'].isna(),:]
+    
+        data = json.dumps( df_tester.to_dict( orient='records' ) )
+    
+    else:
+        data = 'error'
+    
+    
+    return data
+
 ######################################
 
 app = Flask( __name__ )
@@ -47,19 +70,22 @@ app = Flask( __name__ )
 def index():
     if request.method == 'POST':
         message = request.get_json()
-        app.logger.info('Received message: %s', message)
         chat_id, store_id = parse_message(message)
 
         if store_id != 'error':
-            send_message(chat_id, 'Store ok')
-            return Response('Ok', status=200)
+            # load data
+            data = load_dataset( store_id )
+            if data != 'error':
+                send_message(chat_id, 'Store ok')
+                return Response('Ok', status=200)
+            else:
+                send_message( chat_id, 'Store not available' )
+                return Response('Ok', status=200)
         else:
-            send_message(chat_id, 'Store not available')
+            send_message(chat_id, 'Not a valid Store ID')
             return Response('Ok', status=200) 
-        
     else:
-        app.logger.info('<h1> Rossmann Telegram Bot awaiting call. </h1>')
-        abort(401)
+        abort(405)
 
 
 if __name__ == '__main__':
