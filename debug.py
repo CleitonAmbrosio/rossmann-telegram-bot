@@ -57,12 +57,23 @@ def load_dataset(store_id):
         df_tester = df_tester.loc[~df_tester.loc[:,'Open'].isna(),:]
     
         data = json.dumps(df_tester.to_dict(orient='records'))
-    
     else:
         data = 'error'
     
-    
     return data
+
+
+def predict(data):
+    # API call
+    url = 'https://rossmann-sales-forecast-model.onrender.com/rossmann/predict'
+    header = {'Content-type': 'application/json'}
+
+    r = requests.post(url, data=data, headers=header)
+    print('Status code {}'.format(r.status_code))
+
+    df_response = pd.DataFrame(r.json(), columns=r.json()[0].keys())
+
+    return df_response
 
 ######################################
 
@@ -78,7 +89,13 @@ def index():
             # load data
             data = load_dataset(store_id)
             if data != 'error':
-                send_message(chat_id, 'Store ok')
+                # predict
+                df1 = predict(data)
+                # sum up
+                df2 = df1.loc[:,['store','prediction']].groupby('store').sum().reset_index()
+                msg = 'Store #{} will sell ${:,.2f} in the next 6 weeks.'.format(df2.loc[0,'store'], df2.loc[0,'prediction'])
+                # send message
+                send_message(chat_id, msg)
                 return Response('Ok', status=200)
             else:
                 send_message(chat_id, 'Store not available')
