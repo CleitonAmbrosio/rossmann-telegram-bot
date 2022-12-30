@@ -5,20 +5,7 @@ import json
 import pandas as pd
 from flask import Flask, request, Response, abort
 
-# constants
 TOKEN = os.environ.get('TOKEN')
-
-# getMe
-# https://api.telegram.org/TOKEN/getMe
-
-# getUpdates
-# https://api.telegram.org/TOKEN/getUpdates
-
-# sendMessage
-# https://api.telegram.org/TOKEN/sendMessage?chat_id=<ID>&text=<MSSG>
-
-# setWebhook
-# https://api.telegram.org/TOKEN/setWebhook?url=<URL>
 
 def parse_message(message):
     chat_id = message['message']['chat']['id']
@@ -37,9 +24,6 @@ def parse_message(message):
 def send_message(chat_id, text):
     url = 'https://api.telegram.org/bot{}/sendMessage?chat_id={}'.format(TOKEN, chat_id)
     r = requests.post(url, json={'text': text})
-    f'Status code: {r.status_code}'
-    
-    return None
 
 
 def load_dataset(store_id):
@@ -64,7 +48,6 @@ def load_dataset(store_id):
 
 
 def predict(data):
-    # API call
     url = 'https://rossmann-sales-forecast-model.onrender.com/rossmann/predict'
     header = {'Content-type': 'application/json'}
 
@@ -94,7 +77,7 @@ def index():
                 # sum up
                 df2 = df1.loc[:,['store','prediction']].groupby('store').sum().reset_index()
                 msg = 'Store #{} will sell ${:,.2f} in the next 6 weeks.'.format(df2.loc[0,'store'], df2.loc[0,'prediction'])
-                # send message
+                # reply
                 send_message(chat_id, msg)
                 return Response('Ok', status=200)
             else:
