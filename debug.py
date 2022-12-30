@@ -42,10 +42,10 @@ def send_message(chat_id, text):
     return None
 
 
-def load_dataset( store_id ):
-    df_tester = pd.read_csv( 'test.csv' )
-    df_stores_raw = pd.read_csv( 'store.csv', low_memory=False )
-    df_tester = pd.merge( df_tester, df_stores_raw, how='left', on='Store' )
+def load_dataset(store_id):
+    df_tester = pd.read_csv('test.csv')
+    df_stores_raw = pd.read_csv('store.csv', low_memory=False)
+    df_tester = pd.merge(df_tester, df_stores_raw, how='left', on='Store')
 
     df_tester = df_tester.loc[df_tester.loc[:,'Store'] == store_id,:]
     
@@ -53,10 +53,10 @@ def load_dataset( store_id ):
         df_tester = df_tester.loc[df_tester.loc[:,'Open'] != 0,:]
 
         # Fixing df_tester problems not contemplated by Rossmann.data_cleaning
-        df_tester = df_tester.drop( columns='Id', axis=1 )
+        df_tester = df_tester.drop(columns='Id', axis=1)
         df_tester = df_tester.loc[~df_tester.loc[:,'Open'].isna(),:]
     
-        data = json.dumps( df_tester.to_dict( orient='records' ) )
+        data = json.dumps(df_tester.to_dict(orient='records'))
     
     else:
         data = 'error'
@@ -66,9 +66,9 @@ def load_dataset( store_id ):
 
 ######################################
 
-app = Flask( __name__ )
+app = Flask(__name__)
 
-@app.route( '/', methods=['GET', 'POST'] )
+@app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         message = request.get_json()
@@ -76,12 +76,12 @@ def index():
 
         if store_id != 'error':
             # load data
-            data = load_dataset( store_id )
+            data = load_dataset(store_id)
             if data != 'error':
                 send_message(chat_id, 'Store ok')
                 return Response('Ok', status=200)
             else:
-                send_message( chat_id, 'Store not available' )
+                send_message(chat_id, 'Store not available')
                 return Response('Ok', status=200)
         else:
             send_message(chat_id, 'Not a valid Store ID')
@@ -91,5 +91,5 @@ def index():
 
 
 if __name__ == '__main__':
-    port = os.environ.get( 'PORT', 10000 )
-    app.run( host='0.0.0.0', port=port )
+    port = os.environ.get('PORT', 10000)
+    app.run(host='0.0.0.0', port=port)
