@@ -48,7 +48,7 @@ def load_dataset(store_id):
 
 
 def predict(data):
-    url = os.getenv('rossmann-predictor-api')
+    url = os.environ.get('rossmann-predictor-api')
     header = {'Content-type': 'application/json'}
 
     r = requests.post(url, data=data, headers=header)
